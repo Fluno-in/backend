@@ -16,7 +16,7 @@ connectDB();
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173' || 'https://frontend-lapz.onrender.com/' ,
+  origin: 'http://localhost:5173' || 'https://frontend-lapz.onrender.com' ,
   credentials: true,
 }));
 app.use(express.json());
