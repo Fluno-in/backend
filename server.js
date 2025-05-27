@@ -8,6 +8,9 @@ import instagramRoutes from './routes/instagramRoutes.js';
 import onboardingRoutes from './routes/onboardingRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 import LinkSocialsRoutes from './routes/linkSocialsRoutes.js';
+import businessInfo from './routes/businessDashboard/businessInfo.js';
+import personalInfo from './routes/influencerDashboard/personalInfo.js';
+import postAds from './routes/businessDashboard/postAds.js';
 
 dotenv.config();
 
@@ -44,6 +47,9 @@ app.use('/api/verify-otp', verifyOtpRoutes);
 app.use('/api/instagram', instagramRoutes);
 app.use('/api/onboarding', onboardingRoutes);
 app.use('/api/linkSocials', LinkSocialsRoutes);
+app.use('/api/business-info', businessInfo);
+app.use('/api/influencer-info', personalInfo);
+app.use('/api/postAds', postAds);
 
 // Error handling middleware
 app.use(errorHandler);
