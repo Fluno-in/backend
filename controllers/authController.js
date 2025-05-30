@@ -83,6 +83,10 @@ const signup = asyncHandler(async (req, res) => {
   }
 });
 
+import InfluencerOnboarding from '../models/InfluencerOnboarding.js';
+import BusinessOnboarding from '../models/BusinessOnboarding.js';
+import LinkSocials from '../models/LinkSocials.js';
+
 // @desc    Authenticate user & get token
 // @route   POST /api/auth/login
 // @access  Public
@@ -102,6 +106,50 @@ const login = asyncHandler(async (req, res) => {
       throw new Error('Email not verified');
     }
 
+    // Check onboarding completion
+    let onboardingComplete = false;
+    if (user.type === 'influencer') {
+      const influencerOnboarding = await InfluencerOnboarding.findOne({ user: user._id });
+      onboardingComplete = !!influencerOnboarding;
+    } else if (user.type === 'business') {
+      const businessOnboarding = await BusinessOnboarding.findOne({ user: user._id });
+      onboardingComplete = !!businessOnboarding;
+    }
+
+    // Check social linking
+    const linkSocials = await LinkSocials.findOne({ user: user._id });
+    let socialLinked = false;
+    if (linkSocials) {
+      // Check if any social account is linked
+      if (
+        (linkSocials.instagram && linkSocials.instagram.linked) ||
+        (linkSocials.facebook && linkSocials.facebook.trim() !== '') ||
+        (linkSocials.twitter && linkSocials.twitter.trim() !== '') ||
+        (linkSocials.linkedin && linkSocials.linkedin.trim() !== '') ||
+        (linkSocials.youtube && linkSocials.youtube.trim() !== '') ||
+        (linkSocials.tiktok && linkSocials.tiktok.trim() !== '') ||
+        (linkSocials.other && linkSocials.other.trim() !== '')
+      ) {
+        socialLinked = true;
+      }
+    }
+
+    // Determine redirect route based on user type and role
+    let redirectRoute = user.type === 'influencer' ? '/dashboard/influencer' : '/dashboard/business';
+    if (user.type === 'influencer') {
+      if (!onboardingComplete) {
+        redirectRoute = '/onboarding/influencer';
+      } else if (!socialLinked) {
+        redirectRoute = '/onboarding/linksocials';
+      }
+    } else if (user.type === 'business') {
+      if (!onboardingComplete) {
+        redirectRoute = '/onboarding/business';
+      } else if (!socialLinked) {
+        redirectRoute = '/onboarding/linksocials';
+      }
+    }
+
     res.json({
       _id: user._id,
       name: user.name,
@@ -109,6 +157,7 @@ const login = asyncHandler(async (req, res) => {
       type: user.type,
       isVerified: user.isVerified,
       token: generateToken(user._id),
+      redirectRoute,
     });
   } else {
     res.status(401);
