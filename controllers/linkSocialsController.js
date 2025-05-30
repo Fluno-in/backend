@@ -15,9 +15,10 @@ export const getLinkSocials = async (req, res) => {
     }
     res.json({
       instagram: !!linkSocials.instagram,
-      instagram_username: linkSocials.instagram_username || '',
-      instagram_account_type: linkSocials.instagram_account_type || '',
-      instagram_linked: linkSocials.instagram_linked || false,
+      instagram_access_token: linkSocials.instagram?.access_token || '',
+      instagram_user_id: linkSocials.instagram?.user_id || '',
+      instagram_account_type: linkSocials.instagram?.account_type || '',
+      instagram_linked: linkSocials.instagram?.linked || false,
       facebook: !!linkSocials.facebook,
       twitter: !!linkSocials.twitter,
       youtube: !!linkSocials.youtube,
@@ -45,7 +46,14 @@ export const upsertLinkSocials = async (req, res) => {
     if (!linkSocials) {
       linkSocials = new LinkSocials({ user: userId });
     }
-    linkSocials[platform] = linked;
+    if (platform === 'instagram') {
+      if (!linkSocials.instagram) {
+        linkSocials.instagram = {};
+      }
+      linkSocials.instagram.linked = linked;
+    } else {
+      linkSocials[platform] = linked;
+    }
     await linkSocials.save();
     res.json({ message: 'Link socials updated successfully' });
   } catch (err) {

@@ -11,6 +11,8 @@ import LinkSocialsRoutes from './routes/linkSocialsRoutes.js';
 import businessInfo from './routes/businessDashboard/businessInfo.js';
 import personalInfo from './routes/influencerDashboard/personalInfo.js';
 import postAds from './routes/businessDashboard/postAds.js';
+import availableInfluencers from './routes/businessDashboard/availableInfluencers.js';  
+import postRequest from './routes/businessDashboard/requestAds.js';
 
 dotenv.config();
 
@@ -49,8 +51,11 @@ app.use('/api/instagram', instagramRoutes);
 app.use('/api/onboarding', onboardingRoutes);
 app.use('/api/linkSocials', LinkSocialsRoutes);
 app.use('/api/business-info', businessInfo);
-app.use('/api/influencer-info', personalInfo);
+app.use('/api/personal-info', personalInfo);
 app.use('/api/postAds', postAds);
+app.use('/api/availableInfluencers', availableInfluencers);
+app.use('/api/requestAds', postRequest);
+
 
 // Error handling middleware
 app.use(errorHandler);

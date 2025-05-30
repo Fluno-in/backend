@@ -1,5 +1,21 @@
 import mongoose from 'mongoose';
 
+const instagramSubSchema = new mongoose.Schema({
+  access_token: {
+    type: String,
+  },
+  user_id: {
+    type: String,
+  },
+  token_expiry: {
+    type: Date,
+  },
+  linked: {
+    type: Boolean,
+    default: false,
+  },
+}, { _id: false });
+
 const linkSocialsSchema = new mongoose.Schema(
   {
     user: {
@@ -12,17 +28,7 @@ const linkSocialsSchema = new mongoose.Schema(
       type: String,
     },
     instagram: {
-      type: String,
-    },
-    instagram_username: {
-      type: String,
-    },
-    instagram_account_type: {
-      type: String,
-    },
-    instagram_linked: {
-      type: Boolean,
-      default: false,
+      type: instagramSubSchema,
     },
     twitter: {
       type: String,

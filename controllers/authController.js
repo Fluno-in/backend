@@ -91,6 +91,10 @@ const login = asyncHandler(async (req, res) => {
 
   // Check for user email
   const user = await User.findOne({ email });
+  
+  if (!user) {
+    throw new Error('Invalid email Or No account found');
+  }
 
   if (user && (await user.matchPassword(password))) {
     if (!user.isVerified) {
