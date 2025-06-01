@@ -50,6 +50,18 @@ const adSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    appliedInfluencers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    notInterestedInfluencers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     timestamps: true,

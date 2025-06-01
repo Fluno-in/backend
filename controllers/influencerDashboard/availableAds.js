@@ -1,18 +1,28 @@
 import Ad from '../../models/Ad.js';
-import User from '../../models/User.js';
 
-// Controller to get available ads for influencer
+/**
+ * @desc Get all available ads for an influencer
+ * @route GET /api/ads/available
+ * @access Private (Influencer)
+ */
 export const getAvailableAds = async (req, res) => {
   try {
-    const userId = req.user.id; // Assuming user id is available in req.user from auth middleware
+    const userId = req.user.id;
 
-    // Fetch ads that are not marked as not interested by this user
-    // Assuming User model has a field 'notInterestedAds' which is an array of ad IDs
-    const user = await User.findById(userId);
-    const notInterestedAds = user.notInterestedAds || [];
+    let ads = await Ad.find({
+      // appliedInfluencers: { $ne: userId },
+      notInterestedInfluencers: { $ne: userId },
+    }).lean();
 
-    // Fetch ads excluding those in notInterestedAds
-    const ads = await Ad.find({ _id: { $nin: notInterestedAds } });
+    // Add hasApplied flag based on appliedInfluencers array
+    ads = ads.map(ad => {
+      const appliedInfluencers = (ad.appliedInfluencers || []).map(id => id.toString());
+      return {
+        ...ad,
+        appliedInfluencers,
+        hasApplied: appliedInfluencers.includes(userId.toString()),
+      };
+    });
 
     res.json({ success: true, ads });
   } catch (error) {
@@ -21,7 +31,11 @@ export const getAvailableAds = async (req, res) => {
   }
 };
 
-// Controller to apply for an ad
+/**
+ * @desc Apply for an ad
+ * @route POST /api/ads/apply
+ * @access Private (Influencer)
+ */
 export const applyForAd = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -31,9 +45,20 @@ export const applyForAd = async (req, res) => {
       return res.status(400).json({ success: false, message: 'adId is required' });
     }
 
-    // Here you would add logic to record the application, e.g. create an Application record
-    // For now, just respond success
-    // TODO: Implement application logic
+    const ad = await Ad.findById(adId);
+    if (!ad) {
+      return res.status(404).json({ success: false, message: 'Ad not found' });
+    }
+
+    // Check if already applied
+    if (ad.appliedInfluencers.includes(userId)) {
+      return res.status(400).json({ success: false, message: 'Already applied to this ad' });
+    }
+
+    // Update ad
+    ad.appliedInfluencers.addToSet(userId);
+    ad.notInterestedInfluencers.pull(userId);
+    await ad.save();
 
     res.json({ success: true, message: 'Applied for ad successfully' });
   } catch (error) {
@@ -42,7 +67,11 @@ export const applyForAd = async (req, res) => {
   }
 };
 
-// Controller to mark ad as not interested
+/**
+ * @desc Mark an ad as "Not Interested"
+ * @route POST /api/ads/not-interested
+ * @access Private (Influencer)
+ */
 export const markNotInterested = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -52,8 +81,14 @@ export const markNotInterested = async (req, res) => {
       return res.status(400).json({ success: false, message: 'adId is required' });
     }
 
-    // Add adId to user's notInterestedAds array
-    await User.findByIdAndUpdate(userId, { $addToSet: { notInterestedAds: adId } });
+    const ad = await Ad.findById(adId);
+    if (!ad) {
+      return res.status(404).json({ success: false, message: 'Ad not found' });
+    }
+
+    ad.notInterestedInfluencers.addToSet(userId);
+    ad.appliedInfluencers.pull(userId);
+    await ad.save();
 
     res.json({ success: true, message: 'Ad marked as not interested' });
   } catch (error) {
