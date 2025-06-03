@@ -1,6 +1,18 @@
 import asyncHandler from 'express-async-handler';
 import InfluencerOnboarding from '../../models/InfluencerOnboarding.js';
 import Ad from '../../models/Ad.js';
+import fs from 'fs';
+import { v2 as cloudinary } from 'cloudinary';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // @desc    Get influencer ad data by influencer ID
 // @route   GET /api/requestAds/influencer/:influencerId
@@ -28,8 +40,16 @@ const sendRequestToInfluencer = asyncHandler(async (req, res) => {
   const {
     influencerId,
     adId, // optional if sending existing ad
-    campaignData, // optional if sending new campaign data
   } = req.body;
+
+  let campaignData = req.body.campaignData;
+  if (typeof campaignData === 'string') {
+    try {
+      campaignData = JSON.parse(campaignData);
+    } catch (error) {
+      campaignData = null;
+    }
+  }
 
   if (!influencerId) {
     res.status(400);
@@ -39,16 +59,26 @@ const sendRequestToInfluencer = asyncHandler(async (req, res) => {
   // If campaignData is provided, create new ad
   let ad;
   if (campaignData) {
-    // Ensure image is a string (e.g., URL or path), not an object
-    let imagePath = '';
-    if (campaignData.image) {
-      if (typeof campaignData.image === 'string') {
-        imagePath = campaignData.image;
-      } else if (campaignData.image.path) {
-        imagePath = campaignData.image.path;
-      } else {
-        // fallback or error
-        imagePath = '';
+    let imageData = null;
+    if (req.file) {
+      try {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: 'ads',
+        });
+        imageData = {
+          url: result.secure_url,
+          public_id: result.public_id,
+        };
+        // Delete local file after upload
+        fs.unlink(req.file.path, (err) => {
+          if (err) {
+            console.error('Failed to delete local file:', err);
+          }
+        });
+      } catch (error) {
+        console.error('Cloudinary upload error:', error);
+        res.status(500);
+        throw new Error('Image upload failed');
       }
     }
 
@@ -63,7 +93,7 @@ const sendRequestToInfluencer = asyncHandler(async (req, res) => {
       budget: campaignData.budget,
       requirements: campaignData.requirements,
       campaignDescription: campaignData.campaignDescription,
-      image: imagePath,
+      image: imageData,
     });
     ad = await ad.save();
   } else if (adId) {

@@ -44,7 +44,8 @@ const adSchema = new mongoose.Schema(
       type: String,
     },
     image: {
-      type: String,
+      url: { type: String },
+      public_id: { type: String },
     },
     campaignDescription: {
       type: String,

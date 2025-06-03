@@ -3,6 +3,17 @@ import Ad from '../../models/Ad.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { v2 as cloudinary } from 'cloudinary';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // Configure multer storage
 const storage = multer.diskStorage({
@@ -58,7 +69,23 @@ const createAd = asyncHandler(async (req, res) => {
   };
 
   if (req.file) {
-    adData.image = `/uploads/${req.file.filename}`;
+    // Upload image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'ads',
+    });
+
+    // Set image data with url and public_id
+    adData.image = {
+      url: result.secure_url,
+      public_id: result.public_id,
+    };
+
+    // Delete local file after upload
+    fs.unlink(req.file.path, (err) => {
+      if (err) {
+        console.error('Failed to delete local file:', err);
+      }
+    });
   }
 
   const ad = new Ad(adData);
