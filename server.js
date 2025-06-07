@@ -14,6 +14,7 @@ import postAds from './routes/businessDashboard/postAds.js';
 import availableInfluencers from './routes/businessDashboard/availableInfluencers.js';  
 import postRequest from './routes/businessDashboard/requestAds.js';
 import availableAds from './routes/influencerDashboard/availableAds.js';
+import postRequestInfluencer from './routes/influencerDashboard/requestAds.js';
 dotenv.config();
 
 // Connect to MongoDB
@@ -56,6 +57,7 @@ app.use('/api/postAds', postAds);
 app.use('/api/availableInfluencers', availableInfluencers);
 app.use('/api/requestAds', postRequest);
 app.use('/api/availableAds', availableAds);
+app.use('/api/influencerDashboard/requestAds', postRequestInfluencer);
 // Error handling middleware
 app.use(errorHandler);
 

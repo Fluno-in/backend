@@ -4,6 +4,7 @@ import Ad from '../../models/Ad.js';
 import fs from 'fs';
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
+import Request from '../../models/Request.js';
 
 dotenv.config();
 
@@ -56,6 +57,14 @@ const sendRequestToInfluencer = asyncHandler(async (req, res) => {
     throw new Error('Influencer ID is required');
   }
 
+  // Fetch InfluencerOnboarding document to get user ID
+  const influencerDoc = await InfluencerOnboarding.findById(influencerId);
+  if (!influencerDoc) {
+    res.status(404);
+    throw new Error('Influencer not found');
+  }
+  const influencerUserId = influencerDoc.user;
+
   // If campaignData is provided, create new ad
   let ad;
   if (campaignData) {
@@ -107,14 +116,23 @@ const sendRequestToInfluencer = asyncHandler(async (req, res) => {
     throw new Error('Either adId or campaignData must be provided');
   }
 
-  // TODO: Implement logic to send request to influencer
-  // This could involve creating a Request or Application document linking ad and influencer
-  // For now, just respond with success and ad info
+  // Create Request document linking ad and influencer user ID
+  const request = new Request({
+    ad: ad._id,
+    influencer: influencerUserId,
+    business: req.user._id,
+    message: campaignData?.campaignDescription || '',
+    budget: campaignData?.budget || 0,
+    deadline: campaignData?.endDate || null,
+    status: 'pending',
+  });
+  await request.save();
 
   res.status(201).json({
     message: 'Request sent to influencer successfully',
     ad,
     influencerId,
+    request,
   });
 });
 
