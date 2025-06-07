@@ -136,4 +136,30 @@ const sendRequestToInfluencer = asyncHandler(async (req, res) => {
   });
 });
 
-export { getInfluencerAds, sendRequestToInfluencer };
+// @desc    Get request status for a business user and influencer
+// @route   GET /api/requestAds/status/:influencerId
+// @access  Private
+const getRequestStatus = asyncHandler(async (req, res) => {
+  const influencerId = req.params.influencerId;
+  const businessId = req.user._id;
+
+  const influencerDoc = await InfluencerOnboarding.findById(influencerId);
+  if (!influencerDoc) {
+    res.status(404);
+    throw new Error('Influencer not found');
+  }
+  const influencerUserId = influencerDoc.user;
+
+  const request = await Request.findOne({
+    influencer: influencerUserId,
+    business: businessId,
+  });
+
+  if (!request) {
+    return res.json({ status: null });
+  }
+
+  return res.json({ status: request.status });
+});
+
+export { getInfluencerAds, sendRequestToInfluencer, getRequestStatus };
