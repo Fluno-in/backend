@@ -34,6 +34,38 @@ const getInfluencerAds = asyncHandler(async (req, res) => {
   res.json(ads);
 });
 
+// @desc    Get accepted campaign ad IDs per influencer for current business user
+// @route   GET /api/requestAds/acceptedAds
+// @access  Private
+const getAcceptedAdsPerInfluencer = asyncHandler(async (req, res) => {
+  const businessId = req.user._id;
+
+  // console.log('Business ID:', businessId);
+
+  // Find all requests for this business with status 'accepted'
+  const acceptedRequests = await Request.find({
+    business: businessId,
+    status: 'accepted',
+  }).populate({ path: 'ad' }).populate({ path: 'influencer' });
+
+  // console.log('Accepted Requests:', acceptedRequests);
+
+  // Map influencer ID to accepted ad ID
+  const acceptedAdsMap = {};
+  acceptedRequests.forEach((request) => {
+    if (request.influencer && request.ad) {
+      // Check if influencer is populated document or just ID
+      const influencerId = typeof request.influencer === 'object' && request.influencer._id ? request.influencer._id.toString() : request.influencer.toString();
+      const adId = typeof request.ad === 'object' && request.ad._id ? request.ad._id.toString() : request.ad.toString();
+      acceptedAdsMap[influencerId] = adId;
+    }
+  });
+
+  // console.log('Accepted Ads Map:', acceptedAdsMap);
+
+  res.json(acceptedAdsMap);
+});
+
 // @desc    Send request to influencer with selected ad or new campaign
 // @route   POST /api/requestAds/sendRequest
 // @access  Private
@@ -116,10 +148,10 @@ const sendRequestToInfluencer = asyncHandler(async (req, res) => {
     throw new Error('Either adId or campaignData must be provided');
   }
 
-  // Create Request document linking ad and influencer user ID
+  // Create Request document linking ad and influencer onboarding ID
   const request = new Request({
     ad: ad._id,
-    influencer: influencerUserId,
+    influencer: influencerDoc._id,
     business: req.user._id,
     message: campaignData?.campaignDescription || '',
     budget: campaignData?.budget || 0,
@@ -143,15 +175,9 @@ const getRequestStatus = asyncHandler(async (req, res) => {
   const influencerId = req.params.influencerId;
   const businessId = req.user._id;
 
-  const influencerDoc = await InfluencerOnboarding.findById(influencerId);
-  if (!influencerDoc) {
-    res.status(404);
-    throw new Error('Influencer not found');
-  }
-  const influencerUserId = influencerDoc.user;
-
+  // Directly query using influencerId (which is InfluencerOnboarding ID)
   const request = await Request.findOne({
-    influencer: influencerUserId,
+    influencer: influencerId,
     business: businessId,
   });
 
@@ -162,4 +188,4 @@ const getRequestStatus = asyncHandler(async (req, res) => {
   return res.json({ status: request.status });
 });
 
-export { getInfluencerAds, sendRequestToInfluencer, getRequestStatus };
+export { getInfluencerAds, sendRequestToInfluencer, getRequestStatus, getAcceptedAdsPerInfluencer};
