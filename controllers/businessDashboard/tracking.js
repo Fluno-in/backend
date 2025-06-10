@@ -10,10 +10,15 @@ const getTrackingDetailsForBusiness = asyncHandler(async (req, res) => {
   const businessId = req.user._id;
   const adId = req.params.adId;
 
+  console.log('Business ID:', businessId);
+  console.log('Ad ID:', adId);
+
   const request = await Request.findOne({
     ad: adId,
     business: businessId,
   }).populate('ad');
+
+  console.log('Request found:', request);
 
   if (!request) {
     res.status(404);
@@ -21,6 +26,8 @@ const getTrackingDetailsForBusiness = asyncHandler(async (req, res) => {
   }
 
   const tracking = await Tracking.findOne({ request: request._id });
+
+  console.log('Tracking found:', tracking);
 
   if (!tracking) {
     return res.json({ submissions: null, businessStatus: null, businessMessage: null, campaignName: null });

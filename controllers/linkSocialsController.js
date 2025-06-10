@@ -9,23 +9,21 @@ export const getLinkSocials = async (req, res) => {
   }
   try {
     const linkSocials = await LinkSocials.findOne({ user: userId });
-    console.log('LinkSocials document:', linkSocials);
+    // console.log('LinkSocials document:', linkSocials);
     if (!linkSocials) {
       return res.json({});
     }
     res.json({
       instagram: !!linkSocials.instagram,
-      instagram_access_token: linkSocials.instagram?.access_token || '',
-      instagram_user_id: linkSocials.instagram?.user_id || '',
-      instagram_account_type: linkSocials.instagram?.account_type || '',
+      // instagram_access_token: linkSocials.instagram?.access_token || '',
+      // instagram_user_id: linkSocials.instagram?.user_id || '',
+      // instagram_account_type: linkSocials.instagram?.account_type || '',
       instagram_linked: linkSocials.instagram?.linked || false,
       facebook: !!linkSocials.facebook,
       twitter: !!linkSocials.twitter,
       youtube: !!linkSocials.youtube,
       linkedin: !!linkSocials.linkedin,
-      tiktok: !!linkSocials.tiktok,
-      other: !!linkSocials.other,
-    });
+    });    
   } catch (err) {
     console.error('Error fetching linked socials:', err);
     res.status(500).json({ error: 'Server error' });

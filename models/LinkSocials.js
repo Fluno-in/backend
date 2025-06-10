@@ -39,12 +39,6 @@ const linkSocialsSchema = new mongoose.Schema(
     youtube: {
       type: String,
     },
-    tiktok: {
-      type: String,
-    },
-    other: {
-      type: String,
-    },
   },
   {
     timestamps: true,
