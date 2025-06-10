@@ -65,9 +65,16 @@ export const sendPasswordResetEmail = async (toEmail, resetUrl) => {
     to: toEmail,
     subject: 'Password Reset Request',
     html: `
-      <p>You requested a password reset. Click the link below to reset your password:</p>
-      <a href="${resetUrl}">${resetUrl}</a>
-      <p>If you did not request this, please ignore this email.</p>
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color:rgb(123, 107, 228);">Password Reset Request</h2>
+        <p>You requested a password reset. Click the button below to reset your password:</p>
+        <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; margin: 20px 0; background-color: rgb(130, 114, 233); color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
+        <p>If the button above does not work, copy and paste the following URL into your browser:</p>
+        <p style="word-break: break-all;">${resetUrl}</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+        <p>If you did not request this, please ignore this email or contact support if you have questions.</p>
+        <p>Thank you,<br/>The Suzao Team</p>
+      </div>
     `,
   };
 
