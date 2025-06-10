@@ -67,7 +67,19 @@ export const sendOtpEmail = async (toEmail, otp) => {
     from: process.env.SMTP_FROM_EMAIL,
     to: toEmail,
     subject: 'Your OTP Verification Code',
-    text: `Your OTP code is: ${otp}. It will expire in 10 minutes.`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color:rgb(123, 107, 228);">OTP Verification Code</h2>
+        <p>Your OTP code is:</p>
+        <div style="font-size: 24px; font-weight: bold; letter-spacing: 4px; margin: 20px 0; padding: 10px; background-color: #f0f0f0; display: inline-block; border-radius: 5px;">
+          ${otp}
+        </div>
+        <p>This code will expire in 10 minutes.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+        <p>If you did not request this, please ignore this email or contact support if you have questions.</p>
+        <p>Thank you,<br/>The Suzao Team</p>
+      </div>
+    `,
   };
 
   try {
