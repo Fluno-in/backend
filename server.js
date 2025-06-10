@@ -17,6 +17,7 @@ import availableAds from './routes/influencerDashboard/availableAds.js';
 import postRequestInfluencer from './routes/influencerDashboard/requestAds.js';
 import influencerTrackingRoutes from './routes/influencerDashboard/tracking.js';
 import businessTrackingRoutes from './routes/businessDashboard/tracking.js';
+import passwordRoutes from './routes/passwordRoutes.js';
 dotenv.config();
 
 // Connect to MongoDB
@@ -49,6 +50,7 @@ app.use(express.json());
 
 // API routes
 app.use('/api/auth', authRoutes);
+app.use('/api/password', passwordRoutes);
 app.use('/api/verify-otp', verifyOtpRoutes);
 app.use('/api/instagram', instagramRoutes);
 app.use('/api/onboarding', onboardingRoutes);
