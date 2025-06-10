@@ -1,5 +1,5 @@
 import express from 'express';
-import { redirectToInstagramLogin, handleInstagramCallback } from '../controllers/instagramController.js';
+import { redirectToInstagramLogin, handleInstagramCallback } from '../../controllers/linkedSocialControllers/instagramController.js';
 const router = express.Router();
 
 // Protect the login route to ensure user is authenticated before starting OAuth

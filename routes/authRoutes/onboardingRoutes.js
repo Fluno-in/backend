@@ -4,8 +4,8 @@ import {
   getBusinessOnboarding,
   upsertInfluencerOnboarding,
   getInfluencerOnboarding,
-} from '../controllers/onboardingController.js';
-import { protect } from '../middleware/authMiddleware.js';
+} from '../../controllers/authController/onboardingController.js';
+import { protect } from '../../middleware/authMiddleware.js';
 
 const router = express.Router();
 

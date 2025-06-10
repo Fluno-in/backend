@@ -1,4 +1,4 @@
-import LinkSocials from '../models/LinkSocials.js';
+import LinkSocials from '../../models/LinkSocials.js';
 
 // Controller to get linked socials status for authenticated user
 export const getLinkSocials = async (req, res) => {

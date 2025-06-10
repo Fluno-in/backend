@@ -1,5 +1,5 @@
 import axios from 'axios';
-import LinkSocials from '../models/LinkSocials.js';
+import LinkSocials from '../../models/LinkSocials.js';
 
 /**
  * Fetch Instagram insights for a given userId.

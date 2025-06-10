@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
-import User from '../models/User.js';
-import { sendOtpEmail } from '../utils/otpService.js';
+import User from '../../models/User.js';
+import { sendOtpEmail } from '../../utils/otpService.js';
 import crypto from 'crypto';
 
 // Generate JWT
@@ -83,9 +83,9 @@ const signup = asyncHandler(async (req, res) => {
   }
 });
 
-import InfluencerOnboarding from '../models/InfluencerOnboarding.js';
-import BusinessOnboarding from '../models/BusinessOnboarding.js';
-import LinkSocials from '../models/LinkSocials.js';
+import InfluencerOnboarding from '../../models/InfluencerOnboarding.js';
+import BusinessOnboarding from '../../models/BusinessOnboarding.js';
+import LinkSocials from '../../models/LinkSocials.js';
 
 // @desc    Authenticate user & get token
 // @route   POST /api/auth/login

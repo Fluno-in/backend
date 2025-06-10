@@ -2,22 +2,37 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
-import authRoutes from './routes/authRoutes.js';
-import verifyOtpRoutes from './routes/verifyOtpRoutes.js';
-import instagramRoutes from './routes/instagramRoutes.js';
-import onboardingRoutes from './routes/onboardingRoutes.js';
-import { errorHandler } from './middleware/errorMiddleware.js';
-import LinkSocialsRoutes from './routes/linkSocialsRoutes.js';
+
+//  Import Auth and onboarding routes
+import authRoutes from './routes/authRoutes/authRoutes.js';
+import verifyOtpRoutes from './routes/authRoutes/verifyOtpRoutes.js';
+import passwordRoutes from './routes/authRoutes/passwordRoutes.js';
+import onboardingRoutes from './routes/authRoutes/onboardingRoutes.js';
+
+// Import linkedSocial- Instagram routes
+import instagramRoutes from './routes/linkedSocialRoutes/instagramRoutes.js';
+import LinkSocialsRoutes from './routes/linkedSocialRoutes/linkSocialsRoutes.js';
+import instagramInsightsRoutes from './routes/linkedSocialRoutes/instagramInsightsRoutes.js';
+
+// Import business dashboard routes
 import businessInfo from './routes/businessDashboard/businessInfo.js';
-import personalInfo from './routes/influencerDashboard/personalInfo.js';
 import postAds from './routes/businessDashboard/postAds.js';
 import availableInfluencers from './routes/businessDashboard/availableInfluencers.js';  
 import postRequest from './routes/businessDashboard/requestAds.js';
+import businessTrackingRoutes from './routes/businessDashboard/tracking.js';
+
+// Import influencer dashboard routes
+import personalInfo from './routes/influencerDashboard/personalInfo.js';
 import availableAds from './routes/influencerDashboard/availableAds.js';
 import postRequestInfluencer from './routes/influencerDashboard/requestAds.js';
 import influencerTrackingRoutes from './routes/influencerDashboard/tracking.js';
-import businessTrackingRoutes from './routes/businessDashboard/tracking.js';
-import passwordRoutes from './routes/passwordRoutes.js';
+
+// Import contact routes
+import contactRoutes from './routes/contactRoutes.js';
+
+// Import error handling middleware
+import { errorHandler } from './middleware/errorMiddleware.js';
+
 dotenv.config();
 
 // Connect to MongoDB
@@ -48,22 +63,33 @@ app.use(cors({
 
 app.use(express.json());
 
-// API routes
+// API Authentication and Onboarding Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/password', passwordRoutes);
 app.use('/api/verify-otp', verifyOtpRoutes);
-app.use('/api/instagram', instagramRoutes);
 app.use('/api/onboarding', onboardingRoutes);
+
+// Linked Socials - Instagram Routes
+app.use('/api/instagram', instagramRoutes);
 app.use('/api/linkSocials', LinkSocialsRoutes);
+app.use('/api/instagramInsights', instagramInsightsRoutes);
+
+// Business Dashboard Routes
 app.use('/api/business-info', businessInfo);
-app.use('/api/personal-info', personalInfo);
 app.use('/api/postAds', postAds);
 app.use('/api/availableInfluencers', availableInfluencers);
+app.use('/api/businessDashboard/tracking', businessTrackingRoutes);
 app.use('/api/requestAds', postRequest);
+
+// Influencer Dashboard Routes
+app.use('/api/personal-info', personalInfo);
 app.use('/api/availableAds', availableAds);
 app.use('/api/influencerDashboard/requestAds', postRequestInfluencer);
 app.use('/api/influencerDashboard/tracking', influencerTrackingRoutes);
-app.use('/api/businessDashboard/tracking', businessTrackingRoutes);
+
+// Contact Routes
+app.use('/api/contact', contactRoutes);
+
 // Error handling middleware
 app.use(errorHandler);
 

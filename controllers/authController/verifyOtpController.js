@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
-import { sendOtpEmail } from '../utils/otpService.js';
+import User from '../../models/User.js';
+import { sendOtpEmail } from '../../utils/otpService.js';
 
 // Simple logger function for demonstration (replace with real logger if available)
 const log = (message) => {

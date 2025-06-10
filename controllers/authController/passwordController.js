@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import crypto from 'crypto';
-import User from '../models/User.js';
-import { sendPasswordResetEmail } from '../utils/emailService.js';
+import User from '../../models/User.js';
+import { sendPasswordResetEmail } from '../../utils/emailService.js';
 
 // Generate a secure token for password reset
 const generateResetToken = () => {

@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Onboarding from '../../models/InfluencerOnboarding.js';
-import fetchInstagramInsights from '../fetchInstagramInsights.js';
+import fetchInstagramInsights from '../linkedSocialControllers/fetchInstagramInsights.js';
 
 /**
  * @desc    Get all available influencers with personal info and Instagram insights

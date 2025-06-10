@@ -1,6 +1,6 @@
 import express from 'express';
-import { getLinkSocials, upsertLinkSocials } from '../controllers/linkSocialsController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { getLinkSocials, upsertLinkSocials } from '../../controllers/linkedSocialControllers/linkSocialsController.js';
+import { protect } from '../../middleware/authMiddleware.js';
 
 const router = express.Router();
 

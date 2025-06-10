@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
-import BusinessOnboarding from '../models/BusinessOnboarding.js';
-import InfluencerOnboarding from '../models/InfluencerOnboarding.js';
+import BusinessOnboarding from '../../models/BusinessOnboarding.js';
+import InfluencerOnboarding from '../../models/InfluencerOnboarding.js';
 
 // @desc    Create or update business onboarding data
 // @route   POST /api/onboarding/business

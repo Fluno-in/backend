@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import qs from 'qs';
-import LinkSocials from '../models/LinkSocials.js';
+import LinkSocials from '../../models/LinkSocials.js';
 import jwt from 'jsonwebtoken';
 
 /**
