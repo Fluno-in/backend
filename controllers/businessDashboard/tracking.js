@@ -13,21 +13,13 @@ const getTrackingDetailsForBusiness = asyncHandler(async (req, res) => {
   console.log('Business ID:', businessId);
   console.log('Ad ID:', adId);
 
-  const request = await Request.findOne({
+  // Find tracking document by ad and business
+  const tracking = await Tracking.findOne({
     ad: adId,
     business: businessId,
-  }).populate('ad');
+  }).populate('request').populate('ad');
 
-  console.log('Request found:', request);
-
-  if (!request) {
-    res.status(404);
-    throw new Error('Request not found for this ad and business');
-  }
-
-  const tracking = await Tracking.findOne({ request: request._id });
-
-  console.log('Tracking found:', tracking);
+  // console.log('Tracking found:', tracking);
 
   if (!tracking) {
     return res.json({ submissions: null, businessStatus: null, businessMessage: null, campaignName: null });
@@ -37,7 +29,7 @@ const getTrackingDetailsForBusiness = asyncHandler(async (req, res) => {
     submissions: tracking.submissions,
     businessStatus: tracking.businessStatus,
     businessMessage: tracking.businessMessage,
-    campaignName: request.ad?.campaignName || null,
+    campaignName: tracking.ad?.campaignName || null,
   });
 });
 
