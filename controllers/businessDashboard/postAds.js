@@ -5,6 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
+import Notification from '../../models/Notification.js';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ const uploadAdImage = upload.single('image');
 // @desc    Create a new ad
 // @route   POST /api/postAds
 // @access  Private
+
 const createAd = asyncHandler(async (req, res) => {
   const {
     campaignName,
@@ -91,6 +93,18 @@ const createAd = asyncHandler(async (req, res) => {
   const ad = new Ad(adData);
 
   const createdAd = await ad.save();
+
+  // Create notification for campaign invitation
+  const notification = new Notification({
+    user: req.user._id,
+    title: 'New campaign invitation',
+    description: `Your campaign "${campaignName}" has been created.`,
+    unread: true,
+    time: new Date(),
+  });
+
+  await notification.save();
+
   res.status(201).json(createdAd);
 });
 

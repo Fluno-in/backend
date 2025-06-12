@@ -27,8 +27,11 @@ import availableAds from './routes/influencerDashboard/availableAds.js';
 import postRequestInfluencer from './routes/influencerDashboard/requestAds.js';
 import influencerTrackingRoutes from './routes/influencerDashboard/tracking.js';
 
-// Import contact routes
+// Import contact us, notification, profileImage routes
 import contactRoutes from './routes/contactRoutes.js';
+import fetchNotificationRoutes from './routes/sharedDashboard/notificationRoutes.js';
+import createNotificationRoutes from './routes/sharedDashboard/createNotificationRoutes.js';
+import profileImageRoutes from './routes/sharedDashboard/profileImageRoutes.js';
 
 // Import error handling middleware
 import { errorHandler } from './middleware/errorMiddleware.js';
@@ -89,6 +92,11 @@ app.use('/api/influencerDashboard/tracking', influencerTrackingRoutes);
 
 // Contact Routes
 app.use('/api/contact', contactRoutes);
+// Notification Routes
+app.use('/api/notifications', fetchNotificationRoutes);
+app.use('/api/notifications/create', createNotificationRoutes);
+// Profile Image Routes
+app.use('/api/profileImage', profileImageRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
