@@ -12,7 +12,7 @@ export const contactFormHandler = async (req, res) => {
     // Additional validation can be added here (e.g., email format)
 
     // Send email to site admin or support email
-    const toEmail = process.env.SMTP_FROM_EMAIL || 'hello@suzao.com';
+    const toEmail = process.env.SMTP_FROM_EMAIL || 'hello@localyse.com';
 
     await sendContactEmail(toEmail, { name, email, subject, message });
 

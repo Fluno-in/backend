@@ -47,7 +47,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
   'https://frontend-lapz.onrender.com',
-  'https://suzao.netlify.app'
+  'https://localyse-in.vercel.app'
 ];
 
 // Proper CORS configuration
